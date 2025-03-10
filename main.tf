@@ -1,5 +1,5 @@
 provider "aws" {
-  region = "ap-southeast-2"  # Sydney region
+  region = "ap-southeast-2" # Sydney region
 }
 
 # Get the latest Ubuntu 22.04 LTS AMI
@@ -60,7 +60,7 @@ resource "aws_security_group" "allow_ssh" {
 # Create EC2 instance
 resource "aws_instance" "ubuntu_free" {
   ami           = data.aws_ami.ubuntu.id
-  instance_type = "t2.micro"  # Free tier eligible instance type
+  instance_type = "t2.micro" # Free tier eligible instance type
   subnet_id     = tolist(data.aws_subnets.default.ids)[0]
 
   vpc_security_group_ids = [aws_security_group.allow_ssh.id]
@@ -70,7 +70,7 @@ resource "aws_instance" "ubuntu_free" {
   }
 
   root_block_device {
-    volume_size = 8  # Free tier eligible storage
+    volume_size = 8 # Free tier eligible storage
     volume_type = "gp2"
   }
 } 
