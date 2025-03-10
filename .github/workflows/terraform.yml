@@ -44,7 +44,7 @@ jobs:
     needs: terraform
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
-    environment: production
+    environment: dev
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
