@@ -21,6 +21,7 @@ jobs:
   terraform:
     name: Terraform CI/CD
     runs-on: ubuntu-latest
+    if: github.event.inputs.destroy != true
 
     steps:
       - name: Checkout code
@@ -57,7 +58,7 @@ jobs:
     name: Terraform Apply (Manual)
     needs: terraform
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' && github.event.inputs.destroy != true
     environment: dev
     permissions:
       id-token: write
