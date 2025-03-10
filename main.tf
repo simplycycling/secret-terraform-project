@@ -4,13 +4,12 @@ provider "aws" {
 
 terraform {
   backend "s3" {
-    bucket = "terraform-state-demo-rsherman"
-    key    = "ec2-demo/terraform.tfstate"
-    region = "ap-southeast-2"
+    bucket         = "terraform-state-demo-rsherman-dl0ap1pj"
+    key            = "ec2-demo/terraform.tfstate"
+    region         = "ap-southeast-2"
+    dynamodb_table = "terraform-state-lock"
   }
 }
-
-data "aws_caller_identity" "current" {}
 
 # Get the latest Ubuntu 22.04 LTS AMI
 data "aws_ami" "ubuntu" {
