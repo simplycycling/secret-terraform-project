@@ -7,11 +7,14 @@ on:
   pull_request:
   workflow_dispatch:
     inputs:
-      destroy:
-        description: 'Destroy infrastructure'
+      action:
+        description: 'Action to perform'
         required: true
-        type: boolean
-        default: false
+        type: choice
+        options:
+          - plan_apply
+          - destroy
+        default: 'plan_apply'
 
 permissions:
   id-token: write
@@ -19,9 +22,9 @@ permissions:
 
 jobs:
   terraform:
-    name: Terraform CI/CD
+    name: Terraform Plan & Apply
     runs-on: ubuntu-latest
-    if: github.event.inputs.destroy != true
+    if: github.event.inputs.action == 'plan_apply' || github.event_name != 'workflow_dispatch'
 
     steps:
       - name: Checkout code
@@ -55,10 +58,10 @@ jobs:
           retention-days: 1
 
   apply:
-    name: Terraform Apply (Manual)
+    name: Terraform Apply
     needs: terraform
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && github.event.inputs.destroy != true
+    if: (github.event.inputs.action == 'plan_apply' || github.event_name != 'workflow_dispatch') && github.ref == 'refs/heads/main'
     environment: dev
     permissions:
       id-token: write
@@ -87,9 +90,9 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
   destroy:
-    name: Terraform Destroy (Manual)
+    name: Terraform Destroy
     runs-on: ubuntu-latest
-    if: github.event.inputs.destroy == true
+    if: github.event.inputs.action == 'destroy'
     environment: dev
     permissions:
       id-token: write
