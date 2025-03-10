@@ -39,12 +39,22 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
+      - name: Upload Terraform Plan
+        uses: actions/upload-artifact@v4
+        with:
+          name: tfplan
+          path: tfplan
+          retention-days: 1
+
   apply:
     name: Terraform Apply (Manual)
     needs: terraform
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     environment: dev
+    permissions:
+      id-token: write
+      contents: read
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -56,6 +66,11 @@ jobs:
 
       - name: Initialize Terraform
         run: terraform init
+
+      - name: Download Terraform Plan
+        uses: actions/download-artifact@v4
+        with:
+          name: tfplan
 
       - name: Terraform Apply
         run: terraform apply -auto-approve tfplan
