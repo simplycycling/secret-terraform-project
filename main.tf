@@ -2,6 +2,16 @@ provider "aws" {
   region = "ap-southeast-2" # Sydney region
 }
 
+terraform {
+  backend "s3" {
+    bucket = "terraform-state-demo-rsherman"
+    key    = "ec2-demo/terraform.tfstate"
+    region = "ap-southeast-2"
+  }
+}
+
+data "aws_caller_identity" "current" {}
+
 # Get the latest Ubuntu 22.04 LTS AMI
 data "aws_ami" "ubuntu" {
   most_recent = true
