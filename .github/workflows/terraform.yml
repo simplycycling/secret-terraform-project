@@ -87,7 +87,6 @@ jobs:
 
   destroy:
     name: Terraform Destroy (Manual)
-    needs: terraform
     runs-on: ubuntu-latest
     if: github.event.inputs.destroy == true
     environment: dev
@@ -106,8 +105,14 @@ jobs:
       - name: Initialize Terraform
         run: terraform init
 
+      - name: Terraform Plan Destroy
+        run: terraform plan -destroy -out=tfdestroyplan
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
       - name: Terraform Destroy
-        run: terraform destroy -auto-approve
+        run: terraform apply -auto-approve tfdestroyplan
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
