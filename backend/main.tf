@@ -1,7 +1,3 @@
-provider "aws" {
-  region = "ap-southeast-2"
-}
-
 resource "random_string" "bucket_suffix" {
   length  = 8
   special = false
