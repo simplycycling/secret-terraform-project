@@ -31,14 +31,9 @@ data "aws_subnets" "default" {
   }
 }
 
-# Generate random suffix for unique naming
-resource "random_id" "suffix" {
-  byte_length = 4
-}
-
 # Create a security group
 resource "aws_security_group" "allow_ssh" {
-  name        = "allow_ssh_${random_id.suffix.hex}"
+  name_prefix = "allow_ssh_managed_"
   description = "Allow SSH inbound traffic"
   vpc_id      = data.aws_vpc.default.id
 
